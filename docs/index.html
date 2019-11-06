@@ -1,1 +1,47 @@
-test
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<title>Countdown Timer Sample</title>
+
+<script type="text/javascript" charset="UTF-8" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script type="text/javascript" charset="UTF-8" src="../js/jquery.countdown-timer.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+
+    $('#countdown1').countdownTimer('2019/11/12 12:00', function() { console.log('end'); });
+    $('#countdown2').countdownTimer('2019/11/12 12:00')
+      .on('countdownTimer:end', function() { console.log('end'); })
+    $('.countdown').countdownTimer('2019/11/12 12:00', function() { console.log('end'); });
+  
+  });
+</script>
+<style>
+  body { font-size: 2em; }
+  .countdown-timer { color: #00f; font-size: 3em; }
+  input { font-size: 2em; }
+</style>
+</head>
+
+<body>
+<div id="wrap">
+
+<div class="#countdown1">{day}days{hour}:{min}:{sec}.{ms}<div>
+<div class="#countdown2">{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:00}<div>
+
+
+<div class="countdown">{day}days{hour:00}:{min:00}:{sec:00}.{ms:00}<div>
+<div class="countdown">{hour:00}:{min:00}:{sec:00}.{ms:00}<div>
+<div class="countdown">{min:00}:{sec:00}.{ms:00}<div>
+<div class="countdown">{sec:00}.{ms:00}<div>
+
+
+<div class="countdown">{day:00}days{hour:00}:{min:00}:{sec:00}<div>
+<div class="countdown">{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:0}<div>
+<div class="countdown">{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:00}<div>
+<div class="countdown">{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:000}<div>
+  
+</div>
+</body>
+</html>
