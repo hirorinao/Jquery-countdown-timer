@@ -18,22 +18,27 @@
   });
 </script>
 <style>
-  body { font-size: 2em; }
-  .countdown-timer { color: #00f; font-size: 3em; }
-  input { font-size: 2em; }
+  body { font-size: 1em; }
+  .countdown-timer { color: #00f; font-size: 2em; }
 </style>
 </head>
 
 <body>
 <div id="wrap">
 
-<div id="#countdown1">{day}days{hour}:{min}:{sec}.{ms}</div>
-<div id="#countdown2">{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:00}</div>
+<h2>{day}days{hour}:{min}:{sec}.{ms}</h2>
+<div id="countdown1">{day}days{hour}:{min}:{sec}.{ms}</div>
+<h2>{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:00}</h2>
+<div id="countdown2">{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:00}</div>
 
 
+<h2></h2>
 <div class="countdown">{day}days{hour:00}:{min:00}:{sec:00}.{ms:00}</div>
+<h2></h2>
 <div class="countdown">{hour:00}:{min:00}:{sec:00}.{ms:00}</div>
+<h2></h2>
 <div class="countdown">{min:00}:{sec:00}.{ms:00}</div>
+<h2></h2>
 <div class="countdown">{sec:00}.{ms:00}</div>
 
 
