@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<title>Countdown Timer Sample</title>
+
+<script type="text/javascript" charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
+<script type="text/javascript" charset="UTF-8" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+<script type="text/javascript" charset="UTF-8" src="js/jquery.countdown-timer.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+
+    $('#date').change(function () {
+      let val = $(this).val();
+      $('#countdown1').countdownTimer(val, function() { console.log('end #countdown1'); });
+      $('#countdown2').countdownTimer(val)
+        .on('countdownTimer:end', function() {
+          console.log('end #countdown2');
+          $(this).off('countdownTimer:end');
+        });
+      $('.countdown').countdownTimer(val, function() { console.log('end .countdown'); });
+    });
+
+    $('#date').val(moment().add(1,'y').format('YYYY/MM/DD HH:mm:ss')).change();
+
+    $('#countdown-etc1').countdownTimer(moment().add(1,'d'));
+    setTimeout(function(){
+      $('#countdown-etc1').on('countdownTimer:render-sec', function() {
+        $(this).find('.countdown-timer').animate({color: '#f00'}, 100, function() {
+          $(this).animate({color: '#00f'}, 600);
+        });
+      });
+    }, 200);
+
+    $('#countdown-etc2').countdownTimer(Date.now() + 10000);
+    setTimeout(function(){
+      $('#countdown-etc2').on('countdownTimer:render-sec', function(e, sec) {
+        if (sec >= 5) return;
+        $(this).find('.countdown-timer').animate({color: '#f00'}, 100, function() {
+          $(this).animate({color: '#00f'}, 600);
+        });
+      });
+    }, 200);
+
+  });
+</script>
+<style>
+  body { font-size: 1em; }
+  h2 { margin: 0.5em 0 0 0; }
+  h3 { margin: 0.5em 0 0 0; }
+  .countdown-timer { color: #00f; font-size: 2em; }
+  input { font-size: 1.5em; }
+</style>
+</head>
+
+<body>
+<div id="wrap">
+
+<h2>Count Down</h2>
+<input id="date" type="text" value="">
+
+<h2>Zero</h2>
+<h3>{day}days{hour}:{min}:{sec}.{ms}</h3>
+<div id="countdown1">{day}days{hour}:{min}:{sec}.{ms}</div>
+<h3>{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:00}</h3>
+<div id="countdown2">{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:00}</div>
+
+<h2>Milli Second Zero</h2>
+<h3>{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:0}</h3>
+<div class="countdown">{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:0}</div>
+<h3>{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:00}</h3>
+<div class="countdown">{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:00}</div>
+<h3>{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:000}</h3>
+<div class="countdown">{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:000}</div>
+
+<h2>Unit</h2>
+<h3>{day}days{hour:00}:{min:00}:{sec:00}.{ms:00}</h3>
+<div class="countdown">{day}days{hour:00}:{min:00}:{sec:00}.{ms:00}</div>
+<h3>{hour:00}:{min:00}:{sec:00}.{ms:00}</h3>
+<div class="countdown">{hour:00}:{min:00}:{sec:00}.{ms:00}</div>
+<h3>{min:00}:{sec:00}.{ms:00}</h3>
+<div class="countdown">{min:00}:{sec:00}.{ms:00}</div>
+<h3>{sec:00}.{ms:00}</h3>
+<div class="countdown">{sec:00}.{ms:00}</div>
+
+<h2>Etc</h2>
+<div id="countdown-etc1">{hour:00}:{min:00}:{sec:00}.{ms:00}</div>
+<div id="countdown-etc2">{hour:00}:{min:00}:{sec:00}.{ms:00}</div>
+
+
+</div>
+</body>
+</html>

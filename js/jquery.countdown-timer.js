@@ -19,10 +19,58 @@
   };
 
   let renderId = 0;
+  const timeEvent = $('<div>');
   const timeCounterList = {};
   const timeSegmentList = {};
+
   const getRenderId = function() {
     return ++ renderId;
+  };
+
+  const initEl = function($el) {
+    let html = $el.html();
+    let limiterUnit = '';
+    $.each(['day', 'hour', 'min', 'sec', 'ms'], function() {
+      const unit = this;
+      const re = new RegExp('{' + unit + '(?::(0+))?}');
+      if (html.match(re)) {
+        html = html.replace(re,
+          '<span class="countdown-timer countdown-timer-' + unit + '"'
+          + ' data-countdown-timer-unit="' + unit + '"'
+          + ' data-countdown-timer-zero="$1"'
+          + ' data-countdown-timer-limiter="' + limiterUnit + '"></span>'
+        );
+        limiterUnit = limiterTimeUnit[unit];
+      }
+    });
+    $el.html(html);
+  };
+
+  const renderEl = function($el, countdownTime) {
+    $el.find('span.countdown-timer').each(function(index, el) {
+      const $el = $(el);
+      timeEvent.on(
+        'render-' + countdownTime + '-' + $el.data('countdown-timer-unit')
+        + '.' + renderId,
+        function(e, time) {
+          const unit = $el.data('countdown-timer-unit');
+          const limiter = $el.data('countdown-timer-limiter');
+          const zero = $el.data('countdown-timer-zero') + '';
+
+          if (limiter > 0)
+            time = time % limiter;
+          if (unit == 'ms') {
+              time = ('00' + time).slice(-3);
+              if (zero.length)
+                time = time.slice(0, zero.length);
+          } else {
+            if ((time + '').length < zero.length)
+              time = (Array(zero.length).join('0') + time).slice(-zero.length);
+          }
+          $el.text(time);
+        }
+      );
+    });
   };
 
   const resetTimeSegment = function(countdownTime) {
@@ -55,12 +103,13 @@
         const time  = Math.floor(diffTime / timeUnit[unit]);
         if (timeSegmentList[countdownTime][unit] !== time) {
           timeSegmentList[countdownTime][unit] = time;
-          $(window).trigger('_countdownTimer-render-' + countdownTime + '-' + unit, time);
+          timeEvent.trigger('render-' + countdownTime + '-' + unit, time);
         }
       });
       if (diffTime == 0) {
         clearInterval(intervalId);
-        $(window).trigger('_countdownTimer-end-' + countdownTime);
+        delete timeCounterList[countdownTime];
+        timeEvent.trigger('end-' + countdownTime);
       }
     }, 10);
   };
@@ -73,61 +122,29 @@
       const renderId = getRenderId();
 
       if ($el.data('countdown-timer-render-id')) {
-        $(window).off('.countdownTimerRenderId-' + $el.data('countdown-timer-render-id'));
+        timeEvent.off('.' + $el.data('countdown-timer-render-id'));
+        $el.off('.' + $el.data('countdown-timer-render-id'));
       }
       $el.data('countdown-timer-render-id', renderId);
 
-      let html = $el.html();
-      let limiterUnit = '';
+      initEl($el);
+      renderEl($el, countdownTime);
+
       $.each(['day', 'hour', 'min', 'sec', 'ms'], function() {
         const unit = this;
-        const re = new RegExp('{' + unit + '(?::(0+))?}');
-        if (html.match(re)) {
-          html = html.replace(re,
-            '<span class="countdown-timer countdown-timer-' + unit + '"'
-            + ' data-countdown-timer-unit="' + unit + '"'
-            + ' data-countdown-timer-zero="$1"'
-            + ' data-countdown-timer-limiter="' + limiterUnit + '"></span>'
-          );
-          limiterUnit = limiterTimeUnit[unit];
-        }
+        timeEvent.on('render-' + countdownTime + '-' + unit + '.' + renderId, function(e, time) {
+          $el.trigger('countdownTimer:render-' + unit, time);
+        });
       });
-      $el.html(html);
-
-      $(window).on('_countdownTimer-end-' + countdownTime + '.countdownTimerRenderId-' + renderId, function(e) {
-        $(window).off('.countdownTimerRenderId-' + $el.data('countdown-timer-render-id'));
+      timeEvent.on('end-' + countdownTime + '.' + renderId, function(e) {
+        timeEvent.off('.' + renderId);
         $el.trigger('countdownTimer:end');
       });
 
-      $el.find('span.countdown-timer').each(function(index, el) {
-        const $el = $(el);
-        $(window).on(
-          '_countdownTimer-render-' + countdownTime + '-' + $el.data('countdown-timer-unit')
-          + '.countdownTimerRenderId-' + renderId,
-          function(e, time) {
-            const unit = $el.data('countdown-timer-unit');
-            const limiter = $el.data('countdown-timer-limiter');
-            const zero = $el.data('countdown-timer-zero') + '';
-
-            if (limiter > 0)
-              time = time % limiter;
-            if (unit == 'ms') {
-                time = ('00' + time).slice(-3);
-                if (zero.length)
-                  time = time.slice(0, zero.length);
-            } else {
-              if ((time + '').length < zero.length)
-                time = (Array(zero.length).join('0') + time).slice(-zero.length);
-            }
-            $el.text(time);
-          }
-        );
-      });
+      if (typeof(endFunction) == 'function') {
+        $el.on('countdownTimer:end.' + renderId, endFunction);
+      }
     });
-
-    if (typeof(endFunction) == 'function') {
-      this.on('countdownTimer:end', endFunction);
-    }
 
     timeCounter(countdownTime);
     return this;
