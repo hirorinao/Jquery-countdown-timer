@@ -27,24 +27,25 @@
 
     $('#date').val(moment().add(1,'y').format('YYYY/MM/DD HH:mm:ss')).change();
 
-    $('#countdown-etc1').countdownTimer(moment().add(1,'d'));
-    setTimeout(function(){
-      $('#countdown-etc1').on('countdownTimer:render-sec', function() {
-        $(this).find('.countdown-timer').animate({color: '#f00'}, 100, function() {
-          $(this).animate({color: '#00f'}, 600);
-        });
-      });
-    }, 200);
+    const $etc1 = $('#countdown-etc1').countdownTimer(moment().add(1,'d'));
+    const $etc2 = $('#countdown-etc2').countdownTimer(Date.now() + 10000);
 
-    $('#countdown-etc2').countdownTimer(Date.now() + 10000);
     setTimeout(function(){
-      $('#countdown-etc2').on('countdownTimer:render-sec', function(e, sec) {
-        if (sec >= 5) return;
-        $(this).find('.countdown-timer').animate({color: '#f00'}, 100, function() {
-          $(this).animate({color: '#00f'}, 600);
-        });
+      $etc1.on('countdownTimer:render-sec', function() {
+        $etc1.addClass('anime-on');
+        setTimeout(function(){
+          $etc1.removeClass('anime-on');
+        }, 600);
       });
-    }, 200);
+
+      $etc2.on('countdownTimer:render-sec', function(e, sec) {
+        if (sec >= 5) return;
+        $etc2.addClass('anime-on');
+        setTimeout(function(){
+          $etc2.removeClass('anime-on');
+        }, 600);
+      });
+    }, 900);
 
   });
 </script>
@@ -52,7 +53,8 @@
   body { font-size: 1em; }
   h2 { margin: 0.5em 0 0 0; }
   h3 { margin: 0.5em 0 0 0; }
-  .countdown-timer { color: #00f; font-size: 2em; }
+  .countdown-timer { color: #00f; font-size: 2em; transition: 0.2s; }
+  .anime-on .countdown-timer { color: #f00; }
   input { font-size: 1.5em; }
 </style>
 </head>
