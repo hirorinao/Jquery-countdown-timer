@@ -4,6 +4,9 @@
 
 [Demo Countdown Timer](https://hirorinao.github.io/jquery-countdown-timer/demo.html)
 
+## Download
+[jquery.countdown-timer.js](https://github.com/hirorinao/jquery-countdown-timer/releases/download/v1.0/jquery.countdown-timer.min.js)
+
 ## Setup
 ```
 <script type="text/javascript" charset="UTF-8" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -43,4 +46,10 @@ $('.countdown').countdownTimer('2019/11/12 12:00', function() {
 ```
 $('<dummy>').countdownTimer(Date.now() + 2000, () => console.log('2 seconds later'));
 $('<dummy>').countdownTimer('2019/11/12 12:00', () => $('#content').css({display: 'none'}));
+```
+
+## Debug
+
+```
+http://xxxxxx.xxx/xxxxx?_countdown_now=20xx-xx-xx.xx:xx
 ```
