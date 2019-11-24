@@ -21,6 +21,9 @@ $('#countdown1').countdownTimer('2019/11/12 12:00', function() {
 $('#countdown2').countdownTimer('2019/11/12 12:00')
 .on('countdownTimer:end', function() { console.log('end'); })
 
+$('#countdown2').countdownTimer('2019/11/12 12:00')
+.on('countdownTimer:render-sec', function() { console.log('render sec'); })
+
 $('.countdown').countdownTimer('2019/11/12 12:00', function() {
     console.log('end');
 });
@@ -47,6 +50,15 @@ $('.countdown').countdownTimer('2019/11/12 12:00', function() {
 $('<dummy>').countdownTimer(Date.now() + 2000, () => console.log('2 seconds later'));
 $('<dummy>').countdownTimer('2019/11/12 12:00', () => $('#content').css({display: 'none'}));
 ```
+
+## Event
+
+```countdownTimer:render-day```  
+```countdownTimer:render-hour```  
+```countdownTimer:render-min```  
+```countdownTimer:render-sec```  
+```countdownTimer:render-ms```  
+```countdownTimer:end```  
 
 ## Debug
 

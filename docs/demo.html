@@ -5,17 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
 <title>Countdown Timer Sample</title>
 
-<script type="text/javascript" charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
-<script type="text/javascript" charset="UTF-8" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
-<script type="text/javascript" charset="UTF-8" src="js/jquery.countdown-timer.min.js"></script>
-<script type="text/javascript">
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+<link rel="stylesheet" href="css/tomorrow-night-eighties.min.css">
+
+<script src="js/jquery.countdown-timer.min.js"></script>
+<script>
   $(document).ready(function() {
 
     $('#date').change(function () {
       let val = $(this).val();
+
+      $('.input_val').text(val);
       $('#countdown1').countdownTimer(val, function() { console.log('end #countdown1'); });
       $('#countdown2').countdownTimer(val)
         .on('countdownTimer:end', function() {
@@ -25,10 +28,18 @@
       $('.countdown').countdownTimer(val, function() { console.log('end .countdown'); });
     });
 
-    $('#date').val(moment().add(1,'y').format('YYYY/MM/DD HH:mm:ss')).change();
+    $('#date').val(moment().add({days: 12, hours: 3, minutes: 4, seconds: 56}).format('YYYY/MM/DD HH:mm:ss')).change();
 
     const $etc1 = $('#countdown-etc1').countdownTimer(moment().add(1,'d'));
-    const $etc2 = $('#countdown-etc2').countdownTimer(Date.now() + 10000);
+    const $etc2 = $('#countdown-etc2');
+    const loopEtc2 = function() {
+      $etc2.countdownTimer(Date.now() + 10000, function() {
+        setTimeout(function() {
+          loopEtc2();
+        }, 3000);
+      });
+    };
+    loopEtc2();
 
     setTimeout(function(){
       $etc1.on('countdownTimer:render-sec', function() {
@@ -51,11 +62,32 @@
 </script>
 <style>
   body { font-size: 1em; }
-  h2 { margin: 0.5em 0 0 0; }
+  h2 {
+    padding: 0.25em 0.5em;
+    color: #494949;
+    background: transparent;
+    border-left: solid 5px #7db4e6;
+  }
   h3 { margin: 0.5em 0 0 0; }
-  .countdown-timer { color: #00f; font-size: 2em; transition: 0.2s; }
-  .anime-on .countdown-timer { color: #f00; }
-  input { font-size: 1.5em; }
+  .countdown .countdown-timer { color: #00f; font-size: 2em; }
+  .countdown-etc-anime .countdown-etc-unit { color: #00f; font-size: 2em; transition: 0.2s; }
+  .countdown-etc-anime.anime-on .countdown-etc-unit { color: #f00; }
+  input {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+  pre.prettyprint {
+    padding: 3px 10px;
+    border-radius: 5px;
+    margin: 0;
+    font-size: 1.2em;
+  }
+  .prettyprint ol.linenums > li {
+    list-style-type: decimal;
+  }
+  .input_val {
+    color: #9c9;
+  }
 </style>
 </head>
 
@@ -64,34 +96,101 @@
 
 <h2>Count Down</h2>
 <input id="date" type="text" value="">
+<pre class="prettyprint"><code>&lt;script&gt;
+  $('.countdown').countdownTimer('<span class="input_val">This is not code</span>', function() {
+    console.log('countdown end');
+  });
+&lt;/script&gt;
+</code></pre>
 
 <h2>Zero</h2>
-<h3>{day}days{hour}:{min}:{sec}.{ms}</h3>
-<div id="countdown1">{day}days{hour}:{min}:{sec}.{ms}</div>
-<h3>{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:00}</h3>
-<div id="countdown2">{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:00}</div>
+<pre class="prettyprint"><code>&lt;div class="countdown"&gt;{day}days{hour}:{min}:{sec}.{ms}&lt;/div&gt;
+</code></pre>
+<div class="countdown">{day}days{hour}:{min}:{sec}.{ms}</div>
+<pre class="prettyprint"><code>&lt;div class="countdown"&gt;{day:000}days{hour:00}:{min:00}:{sec:00}.{ms:00}&lt;/div&gt;
+</code></pre>
+<div class="countdown">{day:000}days{hour:00}:{min:00}:{sec:00}.{ms:00}</div>
 
 <h2>Milli Second Zero</h2>
-<h3>{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:0}</h3>
+<pre class="prettyprint"><code>&lt;div class="countdown"&gt;{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:0}&lt;/div&gt;
+</code></pre>
 <div class="countdown">{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:0}</div>
-<h3>{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:00}</h3>
+<pre class="prettyprint"><code>&lt;div class="countdown"&gt;{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:00}&lt;/div&gt;
+</code></pre>
 <div class="countdown">{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:00}</div>
-<h3>{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:000}</h3>
+<pre class="prettyprint"><code>&lt;!-- not recommended --&gt;
+&lt;div class="countdown"&gt;{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:000}&lt;/div&gt;
+</code></pre>
 <div class="countdown">{day:00}days{hour:00}:{min:00}:{sec:00}.{ms:000}</div>
 
 <h2>Unit</h2>
-<h3>{day}days{hour:00}:{min:00}:{sec:00}.{ms:00}</h3>
+<pre class="prettyprint"><code>&lt;div class="countdown"&gt;{day}days{hour:00}:{min:00}:{sec:00}.{ms:00}&lt;/div&gt;
+</code></pre>
 <div class="countdown">{day}days{hour:00}:{min:00}:{sec:00}.{ms:00}</div>
-<h3>{hour:00}:{min:00}:{sec:00}.{ms:00}</h3>
+<pre class="prettyprint"><code>&lt;div class="countdown"&gt;{hour:00}:{min:00}:{sec:00}.{ms:00}&lt;/div&gt;
+</code></pre>
 <div class="countdown">{hour:00}:{min:00}:{sec:00}.{ms:00}</div>
-<h3>{min:00}:{sec:00}.{ms:00}</h3>
+<pre class="prettyprint"><code>&lt;div class="countdown"&gt;{min:00}:{sec:00}.{ms:00}&lt;/div&gt;
+</code></pre>
 <div class="countdown">{min:00}:{sec:00}.{ms:00}</div>
-<h3>{sec:00}.{ms:00}</h3>
+<pre class="prettyprint"><code>&lt;div class="countdown"&gt;{sec:00}.{ms:00}&lt;/div&gt;
+</code></pre>
 <div class="countdown">{sec:00}.{ms:00}</div>
 
-<h2>Etc</h2>
-<div id="countdown-etc1">{hour:00}:{min:00}:{sec:00}.{ms:00}</div>
-<div id="countdown-etc2">{hour:00}:{min:00}:{sec:00}.{ms:00}</div>
+<h2>Design Animation</h2>
+<pre class="prettyprint"><code>&lt;script&gt;
+  const $etc1 = $('#countdown-etc1').countdownTimer(moment().add(1,'d'));
+  const $etc2 = $('#countdown-etc2').countdownTimer(Date.now() + 10000);
+
+  $etc1.on('countdownTimer:render-sec', function() {
+    $etc1.addClass('anime-on');
+    setTimeout(function(){
+      $etc1.removeClass('anime-on');
+    }, 600);
+  });
+
+  $etc2.on('countdownTimer:render-sec', function(e, sec) {
+    if (sec &gt;= 5) return;
+    $etc2.addClass('anime-on');
+    setTimeout(function(){
+      $etc2.removeClass('anime-on');
+    }, 600);
+  });
+&lt;/script&gt;
+
+&lt;style&gt;
+  .countdown-etc-anime .countdown-etc-unit {
+    color: #00f; font-size: 2em; transition: 0.2s;
+  }
+  .countdown-etc-anime.anime-on .countdown-etc-unit {
+    color: #f00;
+  }
+&lt;/style&gt;
+
+&lt;div id="countdown-etc1" class="countdown-etc-anime"&gt;
+  &lt;span class="countdown-etc-unit"&gt;{hour:00}&lt;/span&gt;
+  :&lt;span class="countdown-etc-unit"&gt;{min:00}&lt;/span&gt;
+  :&lt;span class="countdown-etc-unit"&gt;{sec:00}&lt;/span&gt;
+  .&lt;span class="countdown-etc-unit"&gt;{ms:00}&lt;/span&gt;
+&lt;/div&gt;
+&lt;div id="countdown-etc2" class="countdown-etc-anime"&gt;
+  &lt;span class="countdown-etc-unit"&gt;{hour:00}&lt;/span&gt;
+  :&lt;span class="countdown-etc-unit"&gt;{min:00}&lt;/span&gt;
+  :&lt;span class="countdown-etc-unit"&gt;{sec:00}&lt;/span&gt;
+  .&lt;span class="countdown-etc-unit"&gt;{ms:00}&lt;/span&gt;
+&lt;/div&gt;
+</code></pre>
+<div id="countdown-etc1" class="countdown-etc-anime"><span class="countdown-etc-unit">{hour:00}</span>:<span class="countdown-etc-unit">{min:00}</span>:<span class="countdown-etc-unit">{sec:00}</span>.<span class="countdown-etc-unit">{ms:00}</span></div>
+<div>Last 5sec</div>
+<div id="countdown-etc2" class="countdown-etc-anime"><span class="countdown-etc-unit">{hour:00}</span>:<span class="countdown-etc-unit">{min:00}</span>:<span class="countdown-etc-unit">{sec:00}</span>.<span class="countdown-etc-unit">{ms:00}</span></div>
+
+<h2>Timer</h2>
+<pre class="prettyprint"><code>&lt;script&gt;
+  $('&lt;dummy&gt;').countdownTimer('2019/11/12 12:00', function() {
+    $('#content').css({display: 'none'});
+  });
+&lt;/script&gt;
+</code></pre>
 
 
 </div>
